@@ -39,6 +39,7 @@ public:
     json serializeMotherboardInfo();
 
     std::string serialize();
+    void addConfigToSign(std::string filename);
 
 };
 

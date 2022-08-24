@@ -37,7 +37,11 @@ int main(int argc, const char *argv[])
 {
     auto os = getCurrentOs();
 
-    std::cout << os.serialize() << std::endl;
+
+    os.addConfigToSign("sign.dat");
+
+    Sign sign;
+    sign.test();
 
     return 0;
 }

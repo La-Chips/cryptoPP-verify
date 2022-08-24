@@ -59,6 +59,11 @@ CryptoPP::SecByteBlock Sign::loadSignature(string filename)
   std::string content( (std::istreambuf_iterator<char>(ifs) ),
                        (std::istreambuf_iterator<char>()    ) );
 
+  auto end = content.find("json");
+  if(end != std::string::npos){
+    content = content.substr(0,end);
+  }
+
   CryptoPP::SecByteBlock signature((const CryptoPP::byte *)content.data(), content.size());
 
 
@@ -122,8 +127,8 @@ void Sign::sign()
 
 void Sign::test()
 {
-
-  this->sign();
+  //this->generateKeys();
+  //this->sign();
   this->verify(this->loadSignature("sign.dat"));
 }
 

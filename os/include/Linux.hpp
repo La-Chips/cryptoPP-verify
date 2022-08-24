@@ -21,6 +21,7 @@ public:
 
 
     std::string serialize();
+    void addConfigToSign(std::string filename);
 
 
     

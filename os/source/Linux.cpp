@@ -121,3 +121,27 @@ void Linux::getCPUInfo()
     eax = 3; /* processor serial number */
     native_cpuid(&eax, &ebx, &ecx, &edx);
 }
+
+
+void Linux::addConfigToSign(std::string filename){
+
+
+    std::ifstream ifs(filename.c_str());
+  std::string content( (std::istreambuf_iterator<char>(ifs) ),
+                       (std::istreambuf_iterator<char>()    ) );
+
+
+    auto end = content.find("json");
+  if(end != std::string::npos){
+    content = content.substr(0,end);
+  }
+
+    content += "json";
+    content += this->serialize(); 
+
+std::ofstream MyFile(filename);
+
+  MyFile << content;
+
+  MyFile.close();
+}
