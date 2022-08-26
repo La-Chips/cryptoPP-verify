@@ -1,4 +1,5 @@
 #include "../include/Sign.hpp"
+#include "../../os/include/Linux.hpp"
 
 using namespace std;
 
@@ -46,11 +47,12 @@ void Sign::saveSignature(CryptoPP::SecByteBlock signature, string filename)
 		CryptoPP::StringSink sink(output);
 		sink.Put(signature, signature.size());
 
-  ofstream MyFile(filename);
 
-  MyFile << output;
 
-  MyFile.close();
+
+  // MyFile << output;
+
+  // MyFile.close();
 }
 
 CryptoPP::SecByteBlock Sign::loadSignature(string filename)
@@ -109,7 +111,8 @@ void Sign::sign()
 {
 
   CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PrivateKey privateKey = this->readPrivateKey("priv.dat");
-  string message = this->getFileData("a.xml");
+  Linux os;
+  std::string message = os.serialize();
 
   // Signer object
   CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::Signer signer(privateKey);
@@ -121,12 +124,32 @@ void Sign::sign()
   // Resize now we know the true size of the signature
   signature.resize(length);
 
+  std::cout << length << std::endl;
+
   // Sign message
   length = signer.SignMessage(this->rng, (const CryptoPP::byte *)message.c_str(),
                               message.length(), signature);
 
   
-  this->saveSignature(signature, "sign.dat");
+  //this->saveSignature(signature, "sign.dat");
+
+  string output;
+		CryptoPP::StringSink sink(output);
+		sink.Put(signature, signature.size());
+
+
+  ofstream file("sign.dat",ofstream::binary);
+
+  int number = length;
+  std::cout << sizeof number << std::endl;
+  std::cout << output.size() << std::endl;
+
+
+  file.write(to_string(number).c_str(),sizeof number);
+  file.write(output.c_str(),number);
+  file.write(message.c_str(), message.size());
+
+  file.close();
 
 }
 
