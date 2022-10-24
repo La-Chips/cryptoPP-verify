@@ -107,6 +107,7 @@ string Sign::getFileData(string filename)
 
 void Sign::sign()
 {
+
   CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PrivateKey privateKey = this->readPrivateKey("priv.dat");
   string message = this->getFileData("a.xml");
 
@@ -131,18 +132,20 @@ void Sign::sign()
 
 void Sign::test()
 {
-  //this->generateKeys();
-  //this->sign();
+  this->generateKeys();
+  this->sign();
   this->verify(this->loadSignature("sign.dat"));
 }
 
 bool Sign::verify(CryptoPP::SecByteBlock signature)
 {
+
   CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PublicKey publicKey = this->readPublicKey("pub.dat");
 
   // Verifier object
   CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::Verifier verifier(publicKey);
   string message = this->getFileData("a.xml");
+
 
   // Verify
   bool result = verifier.VerifyMessage((const CryptoPP::byte *)message.c_str(),
