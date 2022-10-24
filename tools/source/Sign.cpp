@@ -30,14 +30,14 @@ CryptoPP::RSA::PublicKey Sign::readPublicKey(string filename)
 
 void Sign::writePrivateKey(CryptoPP::RSA::PrivateKey key, std::string filename)
 {
-  // CryptoPP::FileSink::Output output(filename);
-  // key.DEREncode(output);
+  CryptoPP::FileSink::Output output(filename.c_str());
+  key.DEREncode(output);
 }
 
 void Sign::writePublicKey(CryptoPP::RSA::PublicKey key, std::string filename)
 {
-  // CryptoPP::FileSink output(filename);
-  //  key.DEREncode(output);
+  CryptoPP::FileSink output(filename.c_str());
+   key.DEREncode(output);
 }
 
 void Sign::saveSignature(CryptoPP::SecByteBlock signature, string filename)
@@ -74,8 +74,8 @@ void Sign::generateKeys()
   CryptoPP::RSA::PrivateKey privateKey(parameters);
   CryptoPP::RSA::PublicKey publicKey(parameters);
 
-  // this->writePrivateKey(privateKey, "priv.dat");
-  // this->writePublicKey(publicKey, "pub.dat");
+  this->writePrivateKey(privateKey, "priv.dat");
+  this->writePublicKey(publicKey, "pub.dat");
 }
 
 string Sign::getFileData(string filename)
