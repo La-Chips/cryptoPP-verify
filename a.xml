@@ -1,0 +1,13 @@
+<BTree Version="4">
+    <Node Type="SEL" ID="1" Description="rootNode">
+        <Node Type="SEL" ID="2" Description="enterNode">
+            <Node Type="SEQ" ID="9" Description="Birth">
+                <Node Type="ACTION" ID="5073" EditorData="2" Name="TipsNode">
+                    <Param Name="Tips" Type="str" Value="drive"/>
+                </Node>
+            </Node>
+        </Node>
+        <Node Type="SEL" ID="3" Description="exitNode"/>
+        <Node Type="SEL" ID="4" Description="execNode"/>
+    </Node>
+</BTree>
