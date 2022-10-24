@@ -5,7 +5,7 @@
 //  Created by Clement Hellot on 18/08/2022.
 //
 #include "./os/include/Linux.hpp"
-#include "./tools/include/OpenSSL.hpp"
+#include "./tools/include/Sign.hpp"
 
 #include <iostream>
 
@@ -41,15 +41,8 @@ std::string getCPUSerialNumber()
 int main(int argc, const char *argv[])
 {
 
-    OpenSSL ssl;
+    Sign ssl;
     ssl.test();
-    // if (ssl.verify())
-    // {
-    //     std::cout <<  "True" << std::endl;
-    // }
-    // else{
-    //     std::cout << "False" << std::endl;
-    // }
     
 
 

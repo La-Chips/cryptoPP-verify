@@ -1,16 +1,16 @@
-#include "../include/OpenSSL.hpp"
+#include "../include/Sign.hpp"
 
 using namespace std;
 
-OpenSSL::OpenSSL(/* args */)
+Sign::Sign(/* args */)
 {
 }
 
-OpenSSL::~OpenSSL()
+Sign::~Sign()
 {
 }
 
-CryptoPP::RSA::PrivateKey OpenSSL::readPrivateKey(string filename)
+CryptoPP::RSA::PrivateKey Sign::readPrivateKey(string filename)
 {
   CryptoPP::RSA::PrivateKey key;
 
@@ -19,7 +19,7 @@ CryptoPP::RSA::PrivateKey OpenSSL::readPrivateKey(string filename)
   return key;
 }
 
-CryptoPP::RSA::PublicKey OpenSSL::readPublicKey(string filename)
+CryptoPP::RSA::PublicKey Sign::readPublicKey(string filename)
 {
   CryptoPP::RSA::PublicKey key;
 
@@ -28,19 +28,19 @@ CryptoPP::RSA::PublicKey OpenSSL::readPublicKey(string filename)
   return key;
 }
 
-void OpenSSL::writePrivateKey(CryptoPP::RSA::PrivateKey key, std::string filename)
+void Sign::writePrivateKey(CryptoPP::RSA::PrivateKey key, std::string filename)
 {
   // CryptoPP::FileSink::Output output(filename);
   // key.DEREncode(output);
 }
 
-void OpenSSL::writePublicKey(CryptoPP::RSA::PublicKey key, std::string filename)
+void Sign::writePublicKey(CryptoPP::RSA::PublicKey key, std::string filename)
 {
   // CryptoPP::FileSink output(filename);
   //  key.DEREncode(output);
 }
 
-void OpenSSL::saveSignature(CryptoPP::SecByteBlock signature, string filename)
+void Sign::saveSignature(CryptoPP::SecByteBlock signature, string filename)
 {
     string output;
 		CryptoPP::StringSink sink(output);
@@ -53,7 +53,7 @@ void OpenSSL::saveSignature(CryptoPP::SecByteBlock signature, string filename)
   MyFile.close();
 }
 
-CryptoPP::SecByteBlock OpenSSL::loadSignature(string filename)
+CryptoPP::SecByteBlock Sign::loadSignature(string filename)
 {
   std::ifstream ifs(filename.c_str());
   std::string content( (std::istreambuf_iterator<char>(ifs) ),
@@ -65,7 +65,7 @@ CryptoPP::SecByteBlock OpenSSL::loadSignature(string filename)
   return signature;
 }
 
-void OpenSSL::generateKeys()
+void Sign::generateKeys()
 {
 
   CryptoPP::InvertibleRSAFunction parameters;
@@ -78,7 +78,7 @@ void OpenSSL::generateKeys()
   // this->writePublicKey(publicKey, "pub.dat");
 }
 
-string OpenSSL::getFileData(string filename)
+string Sign::getFileData(string filename)
 {
   FILE *myfile = fopen(filename.c_str(), "r");
 
@@ -96,7 +96,7 @@ string OpenSSL::getFileData(string filename)
   return message;
 }
 
-void OpenSSL::sign()
+void Sign::sign()
 {
   CryptoPP::RSA::PrivateKey privateKey = this->readPrivateKey("priv.dat");
   string message = this->getFileData("a.xml");
@@ -120,14 +120,14 @@ void OpenSSL::sign()
 
 }
 
-void OpenSSL::test()
+void Sign::test()
 {
 
   this->sign();
   this->verify(this->loadSignature("sign.dat"));
 }
 
-bool OpenSSL::verify(CryptoPP::SecByteBlock signature)
+bool Sign::verify(CryptoPP::SecByteBlock signature)
 {
   CryptoPP::RSA::PublicKey publicKey = this->readPublicKey("pub.dat");
 

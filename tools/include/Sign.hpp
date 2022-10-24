@@ -1,14 +1,6 @@
 #pragma once 
 
 #include <iostream>
-#include <openssl/x509v3.h> //x509 implementation for compatibility
-#include <openssl/bn.h> // 
-#include <openssl/asn1.h>
-#include <openssl/x509.h> // x509 implementation
-#include <openssl/x509_vfy.h> 
-#include <openssl/pem.h> // for reading certificates & keys
-#include <openssl/bio.h>
-#include <openssl/err.h>
 #include <assert.h>
 #include <fstream>
 #include <cryptopp/files.h>
@@ -18,7 +10,7 @@
 #include <cryptopp/osrng.h>
 #include <cryptopp/pssr.h>
 
-class OpenSSL
+class Sign
 {
 private:
     CryptoPP::AutoSeededRandomPool rng;
@@ -35,8 +27,8 @@ private:
 
     std::string getFileData(std::string filename);
 public:
-    OpenSSL(/* args */);
-    ~OpenSSL();
+    Sign(/* args */);
+    ~Sign();
 
     void sign();
 
