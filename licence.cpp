@@ -32,45 +32,12 @@ auto getCurrentOs()
     return *os;
 }
 
-std::string getCPUSerialNumber()
-{
-
-    return "";
-}
 
 int main(int argc, const char *argv[])
 {
-
-    Sign ssl;
-    ssl.test();
-    
-
-
     auto os = getCurrentOs();
 
-    if (os.getType() == "Linux" && false)
-    {
-        //os.getCPUInfo();
-        os.getMotherBoardSerial();
-        os.getGPUInfo();
-        // std::cout << "Available network interfaces :" << std::endl;
-        // os.listAllInterfaces();
-
-        // int index;
-
-        // int x;
-        // std::cin >> x;
-        // while (std::cin.fail() || x == 0 || x > os.getInterfacesCount())
-        // {
-        //     std::cout << "Invalid interface" << std::endl;
-        //     std::cin.clear();
-        //     std::cin.ignore(256, '\n');
-        //     std::cin >> x;
-        // }
-        // std::cout << x << std::endl;
-
-        // std::cout << os.getMACAddress(x) << std::endl;
-    }
+    std::cout << os.serialize() << std::endl;
 
     return 0;
 }

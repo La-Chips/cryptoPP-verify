@@ -8,9 +8,14 @@ string Os::getType()
     return "";
 }
 
-string Os::getMACAddress(int index)
-{
-    return "";
+string Os::serialize(){
+    json values = {};
+
+    //values.push_back(this->serializeMACAddress());
+  //  values.push_back(this->serializeMotherboardInfo());
+    values.push_back(this->getGPUInfo());
+
+    return values.dump();
 }
 
 void Os::listAllInterfaces()
@@ -43,11 +48,12 @@ int Os::getGPUCount()
     return device_count;
 }
 
-// TODO
-void Os::getGPUInfo()
+json Os::getGPUInfo()
 {
     nvmlReturn_t result;
     unsigned int temp;
+    json output = {};
+
 
     // First initialize NVML library
     result = nvmlInit();
@@ -73,31 +79,32 @@ void Os::getGPUInfo()
         unsigned int length;
         nvmlDeviceGetName(device,name,length);
 
-
-
         char uuid[128];
         unsigned length_3;
          nvmlDeviceGetUUID(device,uuid,length_3);
 
-          cout << name << endl;
-          cout << "UUID - " << uuid << endl << endl;
+        json value = {
+            {"name",name},
+            ("uuid",uuid)
+        };
+
+        output.push_back(value);
 
 
 
     }
+    output = {
+        {"GPU", output}
+    };
+
 
     result = nvmlShutdown();
     if (NVML_SUCCESS != result)
         printf("Failed to shutdown NVML: %s\n", nvmlErrorString(result));
+
+    return output;
 }
 
-void Os::getCPUInfo()
-{
-}
-
-void Os::getMotherBoardSerial()
-{
-}
 
 
 std::string Os::exec(const char* cmd) {

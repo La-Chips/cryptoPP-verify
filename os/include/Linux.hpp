@@ -11,9 +11,16 @@ private:
 public:
     Linux() ;
     std::string getMACAddress(int index);
+    json serializeMACAddress();
+
     std::string getType();
     void getCPUInfo();
-    void getMotherBoardSerial();
+    
+    std::string getMotherboardSerial();
+    json serializeMotherboardInfo();
+
+
+    std::string serialize();
 
 
     

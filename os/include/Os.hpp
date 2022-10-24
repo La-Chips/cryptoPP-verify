@@ -8,6 +8,9 @@
 #include <memory>
 #include <stdexcept>
 #include <array>
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
 
 class Os
 {
@@ -21,14 +24,21 @@ public:
     std::string exec(const char* cmd);
 
     std::string getMACAddress(int index);
+    json serializeMACAddress();
+
     std::string getType();
     void listAllInterfaces();
     int getInterfacesCount();
 
     int getGPUCount();
-    void getGPUInfo();
+    json getGPUInfo();
     void getCPUInfo();
-    void getMotherBoardSerial();
+
+
+    std::string getMotherboardSerial();
+    json serializeMotherboardInfo();
+
+    std::string serialize();
 
 };
 
