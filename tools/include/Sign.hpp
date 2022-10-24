@@ -4,8 +4,7 @@
 #include <assert.h>
 #include <fstream>
 #include <cryptopp/files.h>
-#include <cryptopp/eccrypto.h>
-#include <cryptopp/oids.h>
+#include <cryptopp/rsa.h>
 #include <cryptopp/sha.h>
 #include <cryptopp/base64.h>
 #include <cryptopp/osrng.h>
@@ -17,11 +16,11 @@ private:
     CryptoPP::AutoSeededRandomPool rng;
 
     void generateKeys();
-    CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PrivateKey readPrivateKey(std::string filename);
-    CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PublicKey readPublicKey(std::string filename);
+    CryptoPP::RSA::PrivateKey readPrivateKey(std::string filename);
+    CryptoPP::RSA::PublicKey readPublicKey(std::string filename);
 
-    void writePrivateKey(CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PrivateKey key, std::string filename);
-    void writePublicKey(CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PublicKey key, std::string filename);
+    void writePrivateKey(CryptoPP::RSA::PrivateKey key, std::string filename);
+    void writePublicKey(CryptoPP::RSA::PublicKey key, std::string filename);
 
     void saveSignature(CryptoPP::SecByteBlock signature,std::string filename);
     CryptoPP::SecByteBlock loadSignature(std::string filename);
