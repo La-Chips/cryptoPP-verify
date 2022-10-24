@@ -10,34 +10,34 @@ Sign::~Sign()
 {
 }
 
-CryptoPP::RSA::PrivateKey Sign::readPrivateKey(string filename)
+CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PrivateKey Sign::readPrivateKey(string filename)
 {
-  CryptoPP::RSA::PrivateKey key;
+  CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PrivateKey key;
 
   CryptoPP::FileSource input(filename.c_str(), true);
   key.BERDecode(input);
   return key;
 }
 
-CryptoPP::RSA::PublicKey Sign::readPublicKey(string filename)
+CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PublicKey Sign::readPublicKey(string filename)
 {
-  CryptoPP::RSA::PublicKey key;
+  CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PublicKey key;
 
   CryptoPP::FileSource input(filename.c_str(), true);
   key.BERDecode(input);
   return key;
 }
 
-void Sign::writePrivateKey(CryptoPP::RSA::PrivateKey key, std::string filename)
+void Sign::writePrivateKey(CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PrivateKey key, std::string filename)
 {
   CryptoPP::FileSink output(filename.c_str());
   key.DEREncode(output);
 }
 
-void Sign::writePublicKey(CryptoPP::RSA::PublicKey key, std::string filename)
+void Sign::writePublicKey(CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PublicKey key, std::string filename)
 {
   CryptoPP::FileSink output(filename.c_str());
-   key.DEREncode(output);
+  key.DEREncode(output);
 }
 
 void Sign::saveSignature(CryptoPP::SecByteBlock signature, string filename)
@@ -73,11 +73,15 @@ CryptoPP::SecByteBlock Sign::loadSignature(string filename)
 void Sign::generateKeys()
 {
 
-  CryptoPP::InvertibleRSAFunction parameters;
-  parameters.GenerateRandomWithKeySize(this->rng, 3072);
 
-  CryptoPP::RSA::PrivateKey privateKey(parameters);
-  CryptoPP::RSA::PublicKey publicKey(parameters);
+  CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PrivateKey privateKey;
+  CryptoPP::DL_GroupParameters_EC<CryptoPP::ECP> params(CryptoPP::ASN1::secp256k1());
+
+  privateKey.Initialize(this->rng, params);
+
+  CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PublicKey publicKey;
+
+  privateKey.MakePublicKey( publicKey );
 
   this->writePrivateKey(privateKey, "priv.dat");
   this->writePublicKey(publicKey, "pub.dat");
@@ -103,11 +107,11 @@ string Sign::getFileData(string filename)
 
 void Sign::sign()
 {
-  CryptoPP::RSA::PrivateKey privateKey = this->readPrivateKey("priv.dat");
+  CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PrivateKey privateKey = this->readPrivateKey("priv.dat");
   string message = this->getFileData("a.xml");
 
   // Signer object
-  CryptoPP::RSASS<CryptoPP::PSS, CryptoPP::SHA256>::Signer signer(privateKey);
+  CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::Signer signer(privateKey);
 
   // Create signature space
   size_t length = signer.MaxSignatureLength();
@@ -134,10 +138,10 @@ void Sign::test()
 
 bool Sign::verify(CryptoPP::SecByteBlock signature)
 {
-  CryptoPP::RSA::PublicKey publicKey = this->readPublicKey("pub.dat");
+  CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PublicKey publicKey = this->readPublicKey("pub.dat");
 
   // Verifier object
-  CryptoPP::RSASS<CryptoPP::PSS, CryptoPP::SHA256>::Verifier verifier(publicKey);
+  CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::Verifier verifier(publicKey);
   string message = this->getFileData("a.xml");
 
   // Verify
