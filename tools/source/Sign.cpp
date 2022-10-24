@@ -30,7 +30,7 @@ CryptoPP::RSA::PublicKey Sign::readPublicKey(string filename)
 
 void Sign::writePrivateKey(CryptoPP::RSA::PrivateKey key, std::string filename)
 {
-  CryptoPP::FileSink::Output output(filename.c_str());
+  CryptoPP::FileSink output(filename.c_str());
   key.DEREncode(output);
 }
 
