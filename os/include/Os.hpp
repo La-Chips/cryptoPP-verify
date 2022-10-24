@@ -15,15 +15,18 @@ using json = nlohmann::json;
 class Os
 {
 private:
-    /* data */
+
+    
 protected:
     std::vector<std::string> interfaces ;
+    std::string getMACAddress(int index);
+    std::string exec(const char* cmd);
+
+
 
 public:
     Os(){};
-    std::string exec(const char* cmd);
 
-    std::string getMACAddress(int index);
     json serializeMACAddress();
 
     std::string getType();
@@ -32,7 +35,6 @@ public:
 
     int getGPUCount();
     json getGPUInfo();
-    void getCPUInfo();
 
 
     std::string getMotherboardSerial();

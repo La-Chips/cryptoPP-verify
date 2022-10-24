@@ -6,15 +6,15 @@
 class Linux : public Os
 {
 private:
-    inline void native_cpuid(unsigned int *eax, unsigned int *ebx,
-                                unsigned int *ecx, unsigned int *edx);
+
+    protected:
+    std::string getMACAddress(int index);
+
 public:
     Linux() ;
-    std::string getMACAddress(int index);
     json serializeMACAddress();
 
     std::string getType();
-    void getCPUInfo();
     
     std::string getMotherboardSerial();
     json serializeMotherboardInfo();
