@@ -8,6 +8,9 @@
 #include "./tools/include/Sign.hpp"
 
 #include <iostream>
+#include <fstream>
+
+using namespace std;
 
 
 
@@ -35,10 +38,10 @@ auto getCurrentOs()
 
 int main(int argc, const char *argv[])
 {
+
     auto os = getCurrentOs();
 
 
-    os.addConfigToSign("sign.dat");
 
     Sign sign;
     sign.test();

@@ -1,5 +1,5 @@
 #include "../include/Os.hpp"
-#include <nvml.h>
+// #include <nvml.h>
 
 using namespace std;
 
@@ -42,67 +42,67 @@ int Os::getInterfacesCount()
 
 int Os::getGPUCount()
 {
-    unsigned int device_count;
+    unsigned int device_count = 0;
 
-    nvmlDeviceGetCount(&device_count);
+    // nvmlDeviceGetCount(&device_count);
     return device_count;
 }
 
 json Os::getGPUInfo()
 {
-    nvmlReturn_t result;
-    unsigned int temp;
+    // nvmlReturn_t result;
+    // unsigned int temp;
     json output = {};
 
 
-    // First initialize NVML library
-    result = nvmlInit();
-    if (NVML_SUCCESS != result)
-    {
-        printf("Failed to initialize NVML: %s\n", nvmlErrorString(result));
+    // // First initialize NVML library
+    // result = nvmlInit();
+    // if (NVML_SUCCESS != result)
+    // {
+    //     printf("Failed to initialize NVML: %s\n", nvmlErrorString(result));
 
-        printf("Press ENTER to continue...\n");
-        getchar();
-    }
+    //     printf("Press ENTER to continue...\n");
+    //     getchar();
+    // }
 
-    nvmlDevice_t device;
+    // nvmlDevice_t device;
 
-    for (size_t i = 0; i < this->getGPUCount(); i++)
-    {
-        result = nvmlDeviceGetHandleByIndex(i, &device);
-        if (NVML_SUCCESS != result)
-        {
-            printf("Failed to get handle for device %i: %s\n", 0, nvmlErrorString(result));
-        }
+    // for (size_t i = 0; i < this->getGPUCount(); i++)
+    // {
+    //     result = nvmlDeviceGetHandleByIndex(i, &device);
+    //     if (NVML_SUCCESS != result)
+    //     {
+    //         printf("Failed to get handle for device %i: %s\n", 0, nvmlErrorString(result));
+    //     }
 
-        char name[64]; 
-        unsigned int length;
-        nvmlDeviceGetName(device,name,length);
+    //     char name[64]; 
+    //     unsigned int length;
+    //     nvmlDeviceGetName(device,name,length);
 
-        char uuid[128];
-        unsigned length_3;
-         nvmlDeviceGetUUID(device,uuid,length_3);
+    //     char uuid[128];
+    //     unsigned length_3;
+    //      nvmlDeviceGetUUID(device,uuid,length_3);
 
-        json value = {
-            {"name",name},
-            ("uuid",uuid)
-        };
-
-        output.push_back(value);
+    //     json value = {
+    //         {"name",name},
+    //        {"uuid",uuid} 
+    //     };
 
 
-
-    }
-    output = {
-        {"GPU", output}
-    };
+    //     output.push_back(value);
 
 
-    result = nvmlShutdown();
-    if (NVML_SUCCESS != result)
-        printf("Failed to shutdown NVML: %s\n", nvmlErrorString(result));
 
-    return output;
+    // }
+   
+
+
+
+    // result = nvmlShutdown();
+    // if (NVML_SUCCESS != result)
+    //     printf("Failed to shutdown NVML: %s\n", nvmlErrorString(result));
+
+    return {"GPU",output};
 }
 
 

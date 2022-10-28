@@ -10,6 +10,17 @@
 #include <cryptopp/base64.h>
 #include <cryptopp/osrng.h>
 #include <cryptopp/pssr.h>
+#include <filesystem>
+#include <ctime>
+#include <nlohmann/json.hpp>
+#include <string>
+#include <chrono>
+#include <boost/date_time.hpp>
+#include <boost/date_time/gregorian/gregorian.hpp>
+using json = nlohmann::json;
+
+namespace fs = std::filesystem;
+namespace greg =  boost::gregorian;
 
 class Sign
 {
@@ -27,6 +38,8 @@ private:
     CryptoPP::SecByteBlock loadSignature(std::string filename);
 
     std::string getFileData(std::string filename);
+    std::string add_date_to_fingerprint(std::string& content,std::string label, greg::date date);
+    greg::date ask_date();
 public:
     Sign(/* args */);
     ~Sign();
@@ -34,7 +47,7 @@ public:
     void sign();
 
 
-    bool verify(CryptoPP::SecByteBlock signature);
+    bool verify(CryptoPP::SecByteBlock signature,char* msg);
     
 
 

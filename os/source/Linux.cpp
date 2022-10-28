@@ -22,12 +22,14 @@ Linux::Linux()
 
 std::string Linux::serialize()
 {
-    json values = {};
+    json values = {
+        {"Interfaces",this->serializeMACAddress()},
+        {"GPU",this->getGPUInfo()},
+        {"Motherboard", this->serializeMotherboardInfo()}
+    };
 
-    values.push_back(this->serializeMACAddress());
-    values.push_back(this->serializeMotherboardInfo());
-    values.push_back(this->getGPUInfo());
 
+    std::cout << values << std::endl;
     return values.dump();
 }
 
@@ -61,11 +63,14 @@ json Linux::serializeMACAddress()
 
     for (size_t i = 0; i < this->interfaces.size(); i++)
     {
-        value.push_back({this->interfaces[i], this->getMACAddress(i)});
+        json interface = {
+            {this->interfaces[i], this->getMACAddress(i)}
+        };
+        value.push_back(interface);
     }
 
-    value = {
-        {"Interface", value}};
+    
+
     return value;
 }
 
