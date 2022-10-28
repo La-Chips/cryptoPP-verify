@@ -1,5 +1,4 @@
 #include "../include/Sign.hpp"
-#include "../../os/include/Linux.hpp"
 
 using namespace std;
 
@@ -11,7 +10,7 @@ Sign::~Sign()
 {
 }
 
-CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PrivateKey Sign::readPrivateKey(string filename)
+CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PrivateKey Sign::read_private_key(string filename)
 {
   CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PrivateKey key;
 
@@ -20,7 +19,7 @@ CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PrivateKey Sign::readPrivateKe
   return key;
 }
 
-CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PublicKey Sign::readPublicKey(string filename)
+CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PublicKey Sign::read_public_key(string filename)
 {
   CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PublicKey key;
 
@@ -29,50 +28,43 @@ CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PublicKey Sign::readPublicKey(
   return key;
 }
 
-void Sign::writePrivateKey(CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PrivateKey key, std::string filename)
+void Sign::write_private_key(CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PrivateKey key, std::string filename)
 {
   CryptoPP::FileSink output(filename.c_str());
   key.DEREncode(output);
 }
 
-void Sign::writePublicKey(CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PublicKey key, std::string filename)
+void Sign::write_public_key(CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PublicKey key, std::string filename)
 {
   CryptoPP::FileSink output(filename.c_str());
   key.DEREncode(output);
 }
 
-void Sign::saveSignature(CryptoPP::SecByteBlock signature, string filename)
+void Sign::save_signature(CryptoPP::SecByteBlock signature, string filename)
 {
   string output;
   CryptoPP::StringSink sink(output);
   sink.Put(signature, signature.size());
 
+  ofstream MyFile(filename);
 
+  MyFile << output.c_str();
 
-
-  // MyFile << output;
-
-  // MyFile.close();
+  MyFile.close();
 }
 
-CryptoPP::SecByteBlock Sign::loadSignature(string filename)
+CryptoPP::SecByteBlock Sign::load_signature(string filename)
 {
   std::ifstream ifs(filename.c_str());
   std::string content((std::istreambuf_iterator<char>(ifs)),
                       (std::istreambuf_iterator<char>()));
-
-  auto end = content.find("json");
-  if (end != std::string::npos)
-  {
-    content = content.substr(0, end);
-  }
 
   CryptoPP::SecByteBlock signature((const CryptoPP::byte *)content.data(), content.size());
 
   return signature;
 }
 
-void Sign::generateKeys()
+void Sign::generate_keys()
 {
 
   CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PrivateKey privateKey;
@@ -84,11 +76,11 @@ void Sign::generateKeys()
 
   privateKey.MakePublicKey(publicKey);
 
-  this->writePrivateKey(privateKey, "priv.dat");
-  this->writePublicKey(publicKey, "pub.dat");
+  this->write_private_key(privateKey, "priv.dat");
+  this->write_public_key(publicKey, "pub.dat");
 }
 
-string Sign::getFileData(string filepath)
+string Sign::get_file_data(string filepath)
 {
 
   if (!fs::exists(filepath.c_str()))
@@ -112,8 +104,6 @@ std::string Sign::add_date_to_fingerprint(std::string &content, std::string labe
 {
   json fingerprint = json::parse(content);
 
-  
-
   std::string string_date = greg::to_iso_extended_string(date);
 
   fingerprint.push_back({label, string_date});
@@ -136,9 +126,8 @@ greg::date Sign::ask_date()
       std::cout << "Input date (e.g :2022-2-25) :" << std::endl;
       std::cin >> date_string;
 
-       date = greg::from_simple_string(date_string);
+      date = greg::from_simple_string(date_string);
       valid = true;
-
 
       greg::date now = greg::day_clock::universal_day();
 
@@ -147,8 +136,6 @@ greg::date Sign::ask_date()
         std::cout << "\x1B[31m\nExpected futur date\n\033[0m\t\t" << std::endl;
         valid = false;
       }
-      
-
     }
     catch (const boost::exception &e)
     {
@@ -157,19 +144,17 @@ greg::date Sign::ask_date()
   }
 
   return date;
-
 }
 
 void Sign::sign()
 {
 
-  CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PrivateKey privateKey = this->readPrivateKey("priv.dat");
-  Linux os;
+  CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PrivateKey privateKey = this->read_private_key("priv.dat");
 
-std::string fingerprint = this->getFileData("./fingerprint.dat");
+  std::string fingerprint = this->get_file_data("./fingerprint.dat");
 
   fingerprint = this->add_date_to_fingerprint(fingerprint, "creation_date");
-  fingerprint = this->add_date_to_fingerprint(fingerprint,"expiration_date",this->ask_date());
+  fingerprint = this->add_date_to_fingerprint(fingerprint, "expiration_date", this->ask_date());
 
   // Signer object
   CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::Signer signer(privateKey);
@@ -181,19 +166,15 @@ std::string fingerprint = this->getFileData("./fingerprint.dat");
   // Resize now we know the true size of the signature
   signature.resize(length);
 
-  std::cout << length << std::endl;
-
   // Sign message
   length = signer.SignMessage(this->rng, (const CryptoPP::byte *)fingerprint.c_str(),
                               fingerprint.size(), signature);
-
-  // this->saveSignature(signature, "sign.dat");
 
   string output;
   CryptoPP::StringSink sink(output);
   sink.Put(signature, signature.size());
 
-  ofstream file("sign.dat", ofstream::binary);
+  ofstream file("licence.bin", ofstream::binary);
 
   int number = length;
 
@@ -204,17 +185,10 @@ std::string fingerprint = this->getFileData("./fingerprint.dat");
   file.close();
 }
 
-void Sign::test()
-{
-  // this->generateKeys();
-  this->sign();
-  // this->verify(this->loadSignature("sign.dat"));
-}
-
 bool Sign::verify(CryptoPP::SecByteBlock signature, char *msg)
 {
 
-  CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PublicKey publicKey = this->readPublicKey("pub.dat");
+  CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::PublicKey publicKey = this->read_public_key("pub.dat");
 
   // Verifier object
   CryptoPP::ECDSA<CryptoPP::ECP, CryptoPP::SHA256>::Verifier verifier(publicKey);
