@@ -138,6 +138,17 @@ greg::date Sign::ask_date()
 
        date = greg::from_simple_string(date_string);
       valid = true;
+
+
+      greg::date now = greg::day_clock::universal_day();
+
+      if (now >= date)
+      {
+        std::cout << "\x1B[31m\nExpected futur date\n\033[0m\t\t" << std::endl;
+        valid = false;
+      }
+      
+
     }
     catch (const boost::exception &e)
     {
