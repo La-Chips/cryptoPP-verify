@@ -178,7 +178,7 @@ void Sign::sign()
 
   int number = length;
 
-  file.write(to_string(number).c_str(), sizeof number);
+  file.write(reinterpret_cast<const char *>(&number), sizeof number);
   file.write(output.c_str(), number);
   file.write(fingerprint.c_str(), fingerprint.size());
 
@@ -208,4 +208,9 @@ bool Sign::verify(CryptoPP::SecByteBlock signature, char *msg)
     cout << "Message verification failed" << endl;
   }
   return result;
+}
+
+void Sign::test(){
+  this->generate_keys();
+  this->sign();
 }
